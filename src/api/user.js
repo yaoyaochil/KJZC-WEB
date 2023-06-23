@@ -164,3 +164,11 @@ export const resetPassword = (data) => {
     data: data
   })
 }
+
+// 获取总用户数
+export const getUserCount = () => {
+  return service({
+    url: '/user/getUserTotal',
+    method: 'get'
+  })
+}

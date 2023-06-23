@@ -59,7 +59,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, defineEmits } from 'vue'
 import { getFileList, editFileName } from '@/api/fileUploadAndDownload'
 import UploadImage from '@/components/upload/image.vue'
 import UploadCommon from '@/components/upload/common.vue'
@@ -185,6 +185,7 @@ defineExpose({ open })
       line-height: 120px;
       cursor: pointer;
       overflow: hidden;
+
       .el-image__inner {
         max-width: 120px;
         max-height: 120px;

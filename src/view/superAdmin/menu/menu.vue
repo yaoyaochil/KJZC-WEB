@@ -112,7 +112,7 @@
           />
         </el-form-item>
         <el-form-item label="文件路径" prop="component" style="width:60%">
-          <el-input v-model="form.component" autocomplete="off" placeholder="页面:view/xxx/xx.vue 插件:plugin/xx/xx.vue" @blur="fmtComponent" />
+          <el-input v-model="form.component" autocomplete="off" placeholder="页面:view/xxx/xx.vue 分包页面路径:plugin/xx/xx.vue" @blur="fmtComponent" />
           <span style="font-size:12px;margin-right:12px;">如果菜单包含子菜单，请创建router-view二级路由页面或者</span><el-button style="margin-top:4px" size="small" @click="form.component = 'view/routerHolder.vue'">点我设置</el-button>
         </el-form-item>
         <el-form-item label="展示名称" prop="meta.title" style="width:30%">
@@ -213,9 +213,9 @@
           type="primary"
           icon="edit"
           @click="addBtn(form)"
-        >新增可控按钮</el-button>
+        >新增可控模块</el-button>
         <el-table :data="form.menuBtn" style="width: 100%">
-          <el-table-column align="left" prop="name" label="按钮名称" width="180">
+          <el-table-column align="left" prop="name" label="模块名称" width="180">
             <template #default="scope">
               <div>
                 <el-input v-model="scope.row.name" />

@@ -84,7 +84,7 @@ const setOptions = () => {
     ],
     series: [
       {
-        type: 'bar',
+        type: 'line',
         barWidth: '40%',
         itemStyle: {
           borderRadius: [5, 5, 0, 0],

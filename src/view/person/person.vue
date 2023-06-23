@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row :gutter="20">
-      <el-col :span="8" :offset="8">
+      <el-col :span="6">
         <div class="fl-left avatar-box">
           <div class="user-card">
             <div
@@ -25,7 +25,7 @@
             </div>
             <div class="user-personality">
               <p v-if="!editFlag" class="nickName">
-                {{ userStore.userInfo.nickName }}
+                {{ userStore.userInfo.nickName }} &nbsp;
                 <el-icon class="pointer" color="#66b1ff" @click="openEdit">
                   <edit />
                 </el-icon>
@@ -44,12 +44,6 @@
             <div class="user-information">
               <ul>
                 <li>
-                  <el-icon>
-                    <user />
-                  </el-icon>
-                  {{ userStore.userInfo.nickName }}
-                </li>
-                <li>
                   <p class="title">密保手机</p>
                   <p class="desc">
                     已绑定手机:{{ userStore.userInfo.phone }}
@@ -64,13 +58,6 @@
                   </p>
                 </li>
                 <li>
-                  <p class="title">密保问题</p>
-                  <p class="desc">
-                    未设置密保问题
-                    <a href="javascript:void(0)">去设置</a>
-                  </p>
-                </li>
-                <li>
                   <p class="title">修改密码</p>
                   <p class="desc">
                     修改个人密码
@@ -80,10 +67,50 @@
                     >修改密码</a>
                   </p>
                 </li>
+                <li>
+                  <p class="title">绑定微信</p>
+                  <p class="desc">
+                    <span v-if="!noBindwx" style="color: crimson">未绑定</span>
+                    <span v-if="noBindwx">绑定中</span>
+                    <a
+                      v-if="!noBindwx"
+                      style="color: #42b983;"
+                      href="javascript:void(0)"
+                      @click="scan"
+                    >绑定微信</a>
+                    <a
+                      v-if="noBindwx"
+                      style="color: crimson;"
+                      href="javascript:void(0)"
+                      @click="clear"
+                    >解除绑定</a>
+                  </p>
+                </li>
+                <li>
+                  <p class="title">绑定DoDo</p>
+                  <p class="desc">
+                    <span v-if="!noBindDoDo" style="color: crimson">未绑定</span>
+                    <span v-if="noBindDoDo">绑定中</span>
+                    <a
+                      v-if="!noBindDoDo"
+                      href="javascript:void(0)"
+                      @click="DoDodialogVisible = true"
+                    >绑定DoDo</a>
+                    <a
+                      v-if="noBindDoDo"
+                      style="color: crimson;"
+                      href="javascript:void(0)"
+                      @click="clearDoDo"
+                    >解除绑定</a>
+                  </p>
+                </li>
               </ul>
             </div>
           </div>
         </div>
+      </el-col>
+      <el-col :span="18">
+        <div class="fl-right right-main" />
       </el-col>
     </el-row>
 
@@ -195,6 +222,87 @@
         </span>
       </template>
     </el-dialog>
+    <el-dialog
+      v-model="WxdialogVisible"
+      title="绑定微信"
+      width="30%"
+      destroy-on-close
+      @close="clearTimer"
+    >
+      <div class="scan-ercode">
+        <div v-if="timeout" @click="scan">
+          验证码已过期，请重新获取
+        </div>
+        <img v-else :src="wxUrl" width="250" @click="scan">
+        <span style="margin-top: 0.6vw;color: gray;font-size: 0.6vw">使用微信扫码绑定</span>
+      </div>
+
+    </el-dialog>
+    <el-dialog v-model="DoDodialogVisible" title="绑定DoDo社区账号" width="600px">
+      <el-form :model="DoDoForm">
+        <el-form-item label="DoDo社区账号" label-width="120px">
+          <el-select
+            v-model="DoDoForm.dodoId"
+            filterable
+            remote
+            reserve-keyword
+            placeholder="搜索账户"
+            no-match-text="系统无此账户"
+            remote-show-suffix
+            :remote-method="getDoDoUserList"
+            :loading="loading"
+            style="width: 80%"
+          >
+            <el-option
+              v-for="(item) in dodoUserList"
+              :key="item.ID"
+              :label="item.personalNickName"
+              :value="item.dodoSourceId"
+            >
+              <span style="float: left">{{ item.personalNickName }}</span>
+              <span style="margin-left: 5%;color: var(--el-text-color-secondary);font-size: 13px;">{{
+                item.dodoSourceId
+              }}</span>
+              <span style="float: right;display: flex;align-items: center;justify-content: center">
+                <el-avatar :size="30" :src="item.avatarUrl" />
+              </span>
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="DoDo验证码" label-width="120px">
+          <div class="code-box">
+            <el-input
+              v-model="DoDoForm.code"
+              placeholder="请输入验证码"
+              autocomplete="off"
+              style="width:200px"
+            />
+            <el-button
+              style="margin-left: 0.2vw"
+              size="small"
+              type="primary"
+              :disabled="DoDoTime>0"
+              @click="getDoDoCode"
+            >
+              {{ DoDoTime > 0 ? `(${DoDoTime}s)后重新获取` : '获取验证码' }}
+            </el-button>
+          </div>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button
+            size="small"
+            @click="closeBindDoDo"
+          >取消</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            @click="bindDoDoAccount"
+          >绑定</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -207,9 +315,194 @@ export default {
 <script setup>
 import ChooseImg from '@/components/chooseImg/index.vue'
 import { setSelfInfo, changePassword } from '@/api/user.js'
-import { reactive, ref } from 'vue'
+import { reactive, ref, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/pinia/modules/user'
+import { createUniqueId } from '@/view/login/utils/createUniqueId'
+import { clearWx, getLoginPic, loginOrCreate, checkBind } from '@/view/login/api'
+import { bindDodo, checkDoDoBind, getCommunityMemberList, getVerifyCode, unbindDodo } from '@/plugin/dodo/api/member_api'
+
+// 微信绑定=====================================================================================
+// 微信绑定状态 false未绑定 true已绑定
+const noBindwx = ref(false)
+const WxdialogVisible = ref(false)
+const timer = ref(null)
+const timeout = ref(false)
+const wxUrl = ref('')
+const registerVisible = ref(false)
+const registerForm = ref({
+  username: '',
+  password: '',
+  loginFlag: '',
+})
+
+// 检查是否绑定微信
+const checkBindWx = async() => {
+  const res = await checkBind()
+  if (res.code === 0) {
+    noBindwx.value = res.data
+  }
+}
+
+checkBindWx()
+
+// 开始扫码
+const scan = async() => {
+  WxdialogVisible.value = true
+  const loginFlag = createUniqueId(6)
+  const state = window.localStorage.getItem('token') || undefined
+  await nextTick()
+  const res = await getLoginPic({ loginFlag, state })
+  if (res.code === 0) {
+    timeout.value = false
+    clearTimer()
+    setTimeout(() => {
+      timeout.value = true
+    }, 250 * 1000)
+    wxUrl.value = `https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=${res.data.ticket}`
+    timer.value = setInterval(() => {
+      polling(loginFlag, state)
+    }, 2000)
+  }
+}
+// 检查微信登陆状态
+const polling = async(loginFlag, state) => {
+  const res = await loginOrCreate({ loginFlag, state })
+  if (res.code === 0) {
+    if (res.data.scan) {
+      ElMessage.success(res.msg)
+      clearInterval(timer.value)
+      timer.value = null
+      if (res.data.needRegister) {
+        registerForm.value.loginFlag = loginFlag
+        registerVisible.value = true
+      }
+      WxdialogVisible.value = false
+    }
+    if (res.data.token) {
+      ElMessage.success(res.msg)
+      window.localStorage.setItem('token', res.data.token)
+      window.location.reload()
+    }
+  } else {
+    clearInterval(timer.value)
+    timer.value = null
+  }
+}
+
+// 清理定时器
+const clearTimer = () => {
+  clearInterval(timer.value)
+  checkBindWx()
+}
+// 解绑微信
+const clear = async() => {
+  const res = await clearWx()
+  if (res.code === 0) {
+    await checkBindWx()
+    ElMessage.success(res.msg)
+  }
+}
+// 微信绑定=====================================================================================
+
+// DoDo绑定=====================================================================================
+// DoDo绑定状态 false未绑定 true已绑定
+const noBindDoDo = ref(false)
+const DoDodialogVisible = ref(false)
+const DoDoTime = ref(0)
+const DoDoForm = reactive({
+  dodoId: '',
+  code: '',
+})
+// 检查是否绑定
+const clearDoDo = async() => {
+  const res = await unbindDodo()
+  if (res.code === 0) {
+    await checkBindDoDo()
+    ElMessage.success(res.msg)
+  }
+}
+
+// 获取验证码
+const getDoDoCode = async() => {
+  if (DoDoForm.dodoId === '') {
+    ElMessage.error('请先选择您的账户')
+    return
+  }
+  DoDoTime.value = 60
+  const res = await getVerifyCode({ DoDoUserSourceId: DoDoForm.dodoId })
+  if (res.code === 0) {
+    ElMessage.success(res.msg)
+  }
+  let timer = setInterval(() => {
+    DoDoTime.value--
+    if (DoDoTime.value <= 0) {
+      clearInterval(timer)
+      timer = null
+    }
+  }, 1000)
+}
+
+const loading = ref(false)
+const dodoUserList = ref([])
+// 远程搜索DoDo用户
+const getDoDoUserList = async(query) => {
+  if (query) {
+    loading.value = true
+    setTimeout(async() => {
+      const pageInfo = {
+        page: 1,
+        size: 10,
+        personalNickName: query,
+      }
+      const res = await getCommunityMemberList(pageInfo)
+      if (res.code === 0) {
+        loading.value = false
+        dodoUserList.value = res.data.list
+      }
+    }, 500)
+  } else {
+    const pageInfo = {
+      page: 1,
+      pageSize: 10,
+    }
+    const res = await getCommunityMemberList(pageInfo)
+    if (res.code === 0) {
+      dodoUserList.value = res.data.list
+    }
+  }
+}
+getDoDoUserList()
+
+const closeBindDoDo = () => {
+  DoDodialogVisible.value = false
+  DoDoForm.dodoId = ''
+  DoDoForm.code = ''
+}
+
+// 检查是否绑定
+const checkBindDoDo = async() => {
+  const res = await checkDoDoBind()
+  if (res.code === 0) {
+    noBindDoDo.value = res.data
+  }
+}
+
+checkBindDoDo()
+const bindDoDoAccount = async() => {
+  if (DoDoForm.dodoId === '' || DoDoForm.code === '') {
+    ElMessage.error('请先输入账户和验证码')
+    return
+  }
+  const res = await bindDodo({ DoDoUserSourceId: DoDoForm.dodoId, ValidateCode: DoDoForm.code })
+  if (res.code === 0) {
+    ElMessage.success(res.msg)
+    closeBindDoDo()
+    await checkBindDoDo()
+  }
+}
+
+// DoDo绑定=====================================================================================
 
 const path = ref(import.meta.env.VITE_BASE_API + '/')
 const activeName = ref('second')
@@ -312,10 +605,6 @@ const enterEdit = async() => {
   editFlag.value = false
 }
 
-const handleClick = (tab, event) => {
-  console.log(tab, event)
-}
-
 const changePhoneFlag = ref(false)
 const time = ref(0)
 const phoneForm = reactive({
@@ -393,6 +682,41 @@ const changeEmail = async() => {
   overflow: hidden;
 }
 
+.right-main {
+    width: 100%;
+    height: 100%;
+    background: #FFFFFF;
+    border-radius: 8px;
+}
+
+.scan-ercode {
+  ::v-deep(iframe) {
+    border: 0;
+  }
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  img {
+    cursor: pointer;
+    border: 1px dashed #ccc;
+    border-radius: 4px;
+  }
+
+  div {
+    display: inline-flex;
+    width: 250px;
+    height: 250px;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+}
+
 .avatar-uploader .el-upload:hover {
   border-color: #409eff;
 }
@@ -414,7 +738,7 @@ const changeEmail = async() => {
 
 .avatar-box {
   box-shadow: -2px 0 20px -16px;
-  width: 80%;
+  width: 100%;
   height: 100%;
 
   .user-card {
@@ -441,12 +765,12 @@ const changeEmail = async() => {
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 26px;
+        font-size: 0.8vw;
       }
 
       .person-info {
-        margin-top: 6px;
-        font-size: 14px;
+        margin-top: 0.5vw;
+        font-size: 0.7vw;
         color: #999;
       }
     }
@@ -466,34 +790,41 @@ const changeEmail = async() => {
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+          font-size: 1vw;
 
           i {
             margin-right: 8px;
           }
 
           .title {
-            padding: 5px;
-            font-size: 18px;
+            padding: 0.5vw;
+            //font-size: 100%;
+            // 大小自动变化
+            font-size: 0.7vw;
             color: #696969;
+              font-weight: bolder;
             background-color: #ffffff;
-            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
+            // 外圈阴影
+            box-shadow: 1px 1px 1px 1px rgba(31, 32, 35, 0.47);
             display: flex;
-            flex: 1;
-            width: 15%;
+            width: 4vw;
             justify-content: center;
             align-items: center;
             border-radius: 5px;
             margin-bottom: 10px;
+            margin-left: 1vw;
           }
 
           .desc {
-            font-size: 16px;
-            padding: 0 10px 0 10px;
+            font-size: 0.6vw;
+            margin-top: 0.6vw;
+            margin-left: 1vw;
             color: #a9a9a9;
 
             a {
               color: rgb(64, 158, 255);
               float: right;
+              margin-right: 1vw;
             }
           }
 
@@ -503,7 +834,6 @@ const changeEmail = async() => {
 
           border-bottom: 2px solid #f0f2f5;
           padding: 20px 0;
-          font-size: 16px;
           font-weight: 400;
           color: #606266;
         }
@@ -520,9 +850,10 @@ const changeEmail = async() => {
   display: flex;
   justify-content: center;
   border-radius: 20px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.62);
 
   &:hover {
-    color: #fff;
+    color: #5cacea;
     background: linear-gradient(
                     to bottom,
                     rgba(255, 255, 255, 0.15) 0%,

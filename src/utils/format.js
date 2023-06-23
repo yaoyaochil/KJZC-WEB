@@ -26,3 +26,11 @@ export const getDictFunc = async(type) => {
   const dicts = await getDict(type)
   return dicts
 }
+
+export const formatInt = (value) => {
+  // 如果是数字
+  if (!isNaN(value)) {
+    // 如果是1返回是，如果是0返回否
+    return value === 1 ? '是' : '否'
+  }
+}

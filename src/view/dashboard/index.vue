@@ -3,56 +3,123 @@
     <div class="bodo-card-box">
       <div class="bodo-card bodo-top-card">
         <div class="bodo-top-card-left">
-          <div class="bodo-top-card-left-title">早安，管理员，请开始一天的工作吧</div>
+          <!--          <div class="bodo-top-card-left-title">祝你愉快的度过每一天</div>-->
           <div class="bodo-top-card-left-dot">{{ weatherInfo }}</div>
           <div class="bodo-top-card-left-rows">
             <el-row>
               <el-col :span="8" :xs="24" :sm="8">
                 <div class="flex-center">
-                  <el-icon class="dashboard-icon">
-                    <sort />
-                  </el-icon>
-                  今日流量 (1231231)
+                  <div class="statistic-card">
+                    <el-statistic :value="dashBoardData.dodoUserCount.total">
+                      <template #title>
+                        <div style="display: inline-flex; align-items: center">
+                          <el-icon class="dashboard-icon">
+                            <Avatar />
+                          </el-icon>
+                          社区成员总数
+                          <el-tooltip effect="dark" content="数据来自DoDo社区实时数据" placement="top">
+                            <el-icon style="margin-left: 4px" :size="12">
+                              <Warning />
+                            </el-icon>
+                          </el-tooltip>
+                        </div>
+                      </template>
+                    </el-statistic>
+                    <div class="statistic-footer">
+                      <div class="footer-item">
+                        <span>较昨日</span>
+                        <span :class="dashBoardData.dodoUserCount.today >= 0 ? 'green' : 'red'">
+                          {{ dashBoardData.dodoUserCount.today }}%
+                          <el-icon>
+                            <CaretTop v-if="dashBoardData.dodoUserCount.today >= 0"/>
+                            <CaretBottom v-if="dashBoardData.dodoUserCount.today < 0"/>
+                          </el-icon>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </el-col>
               <el-col :span="8" :xs="24" :sm="8">
                 <div class="flex-center">
-                  <el-icon class="dashboard-icon">
-                    <avatar />
-                  </el-icon>
-                  总用户数 (24001)
+                  <div class="statistic-card">
+                    <el-statistic :value="dashBoardData.userCount.total">
+                      <template #title>
+                        <div style="display: inline-flex; align-items: center">
+                          <el-icon class="dashboard-icon">
+                            <Avatar />
+                          </el-icon>
+                          系统成员总数
+                          <el-tooltip effect="dark" content="数据来自系统实时统计" placement="top">
+                            <el-icon style="margin-left: 4px" :size="12">
+                              <Warning />
+                            </el-icon>
+                          </el-tooltip>
+                        </div>
+                      </template>
+                    </el-statistic>
+                    <div class="statistic-footer">
+                      <div class="footer-item">
+                        <span>较昨日</span>
+                        <span :class="dashBoardData.userCount.today >= 0 ? 'green' : 'red'">
+                          {{ dashBoardData.userCount.today }}%
+                          <el-icon>
+                            <CaretTop v-if="dashBoardData.userCount.today >= 0"/>
+                            <CaretBottom v-if="dashBoardData.userCount.today < 0"/>
+                          </el-icon>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </el-col>
               <el-col :span="8" :xs="24" :sm="8">
                 <div class="flex-center">
-                  <el-icon class="dashboard-icon">
-                    <comment />
-                  </el-icon>
-                  好评率 (99%)
+                  <div class="statistic-card">
+                    <el-statistic :value="dashBoardData.goodRate.total">
+                      <template #title>
+                        <div style="display: inline-flex; align-items: center">
+                          <el-icon class="dashboard-icon">
+                            <sort />
+                          </el-icon>
+                          总会员积分
+                          <el-tooltip effect="dark" content="数据由窥镜后台统一提供" placement="top">
+                            <el-icon style="margin-left: 4px" :size="12">
+                              <Warning />
+                            </el-icon>
+                          </el-tooltip>
+                        </div>
+                      </template>
+                    </el-statistic>
+                    <div class="statistic-footer">
+                      <div class="footer-item">
+                        <span>较昨日</span>
+                        <span :class="dashBoardData.goodRate.today >= 0 ? 'green' : 'red'">
+                          {{dashBoardData.goodRate.today}}%
+                          <el-icon>
+                            <CaretTop v-if="dashBoardData.goodRate.today >= 0"/>
+                            <CaretBottom v-if="dashBoardData.goodRate.today < 0"/>
+                          </el-icon>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </el-col>
             </el-row>
           </div>
           <div>
             <div class="bodo-top-card-left-item">
-              使用教学：
+              窥镜之城官网：
               <a
                 style="color:#409EFF"
                 target="view_window"
-                href="https://www.bilibili.com/video/BV1Rg411u7xH/"
-              >https://www.bilibili.com/video/BV1Rg411u7xH</a>
-            </div>
-            <div class="bodo-top-card-left-item">
-              插件仓库：
-              <a
-                style="color:#409EFF"
-                target="view_window"
-                href="https://plugin.bodoadmin.com/#/layout/home"
-              >https://plugin.bodoadmin.com</a>
+                href="http://kjzc.club/"
+              >点击前往 click 🖕🏻</a>
             </div>
           </div>
         </div>
-        <img src="@/assets/dashboard.png" class="bodo-top-card-right" alt>
+        <img src="../../assets/dashboard.svg" class="bodo-top-card-right" alt>
       </div>
     </div>
     <div class="bodo-card-box">
@@ -94,9 +161,9 @@
             <el-col :xs="24" :sm="18">
               <echarts-line />
             </el-col>
-<!--            <el-col :xs="24" :sm="6">-->
-<!--              <dashboard-table />-->
-<!--            </el-col>-->
+            <!--            <el-col :xs="24" :sm="6">-->
+            <!--              <dashboard-table />-->
+            <!--            </el-col>-->
           </el-row>
         </div>
       </div>
@@ -110,7 +177,44 @@ import EchartsLine from '@/view/dashboard/dashboardCharts/echartsLine.vue'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useWeatherInfo } from '@/view/dashboard/weather.js'
+import { getUserCount } from '@/api/user.js'
+import { getCommunityMemberCount } from '@/plugin/dodo/api/member_api.js'
 
+const dashBoardData = ref({
+  userCount: {
+    total: 0,
+    today: -35
+  },
+  dodoUserCount: {
+    total: 0,
+    today: 0
+  },
+  goodRate: {
+    total: 0,
+    today: 0
+  }
+})
+
+// 获取用户总数
+const getUserCountData = async() => {
+  const res = await getUserCount()
+  if (res.code === 0) {
+    console.log(res.data.total)
+    dashBoardData.value.userCount.total = res.data.total
+  }
+}
+
+getUserCountData()
+
+// 获取社区成员总数
+const getCommunityMemberCountData = async() => {
+  const res = await getCommunityMemberCount()
+  if (res.code === 0) {
+    console.log(res.data.total)
+    dashBoardData.value.dodoUserCount.total = res.data
+  }
+}
+getCommunityMemberCountData()
 const weatherInfo = useWeatherInfo()
 
 const toolCards = ref([
@@ -136,25 +240,18 @@ const toolCards = ref([
     bg: 'rgba(179, 127, 235,.3)'
   },
   {
-    label: '代码生成器',
-    icon: 'cpu',
-    name: 'autoCode',
-    color: '#ffd666',
-    bg: 'rgba(255, 214, 102,.3)'
+    label: '分包开发',
+    icon: 'set-up',
+    name: 'autoPlug',
+    color: '#b37feb',
+    bg: 'rgba(179, 127, 235,.3)'
   },
   {
-    label: '表单生成器',
-    icon: 'document-checked',
-    name: 'formCreate',
-    color: '#ff85c0',
-    bg: 'rgba(255, 133, 192,.3)'
-  },
-  {
-    label: '关于我们',
+    label: '个人中心',
     icon: 'user',
-    name: 'about',
-    color: '#5cdbd3',
-    bg: 'rgba(92, 219, 211,.3)'
+    name: 'person',
+    color: '#ff9c6e',
+    bg: 'rgba(255, 156, 110,.3)'
   }
 ])
 
@@ -227,9 +324,9 @@ export default {
             }
         }
         &-right {
-            height: 600px;
-            width: 600px;
-            margin-top: 28px;
+            height: 500px;
+            width: 500px;
+          margin-top: 20px;
         }
     }
      ::v-deep(.el-card__header){
@@ -286,9 +383,8 @@ export default {
     }
 }
 .dashboard-icon {
-    font-size: 20px;
+    font-size: 15px;
     color: rgb(85, 160, 248);
-    width: 30px;
     height: 30px;
     margin-right: 10px;
     @include flex-center;
@@ -325,5 +421,54 @@ export default {
             font-size: 18px;
         }
     }
+}
+
+// 统计组件
+:global(h2#card-usage ~ .example .example-showcase) {
+  background-color: var(--el-fill-color) !important;
+}
+
+.el-statistic {
+  --el-statistic-content-font-size: 28px;
+}
+
+.statistic-card {
+  height: 100%;
+  //padding: 20px;
+  border-radius: 4px;
+  background-color: var(--el-bg-color-overlay);
+}
+
+.statistic-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--el-text-color-regular);
+  margin-top: 16px;
+}
+
+.statistic-footer .footer-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 1.05vw;
+}
+
+.statistic-footer .footer-item span:last-child {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 4px;
+}
+::v-deep(.el-statistic__number){
+  margin-left: 1.6vw;
+}
+
+.green {
+  color: var(--positive-color,#67c23a);
+}
+.red {
+  color: var(--el-color-error);
 }
 </style>
