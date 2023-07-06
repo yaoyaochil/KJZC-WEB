@@ -3,8 +3,8 @@
  */
 
 const config = {
-  appName: '窥镜 · Admin',
-  appLogo: 'https://huaduogiegie.oss-cn-shanghai.aliyuncs.com/picgo/202305281609807.png',
+  appName: 'K·J·Z·C',
+  appLogo: 'https://huaduogiegie.oss-cn-shanghai.aliyuncs.com/picgo/202306261548230.png',
   showViteLogo: true
 }
 

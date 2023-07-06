@@ -6,8 +6,8 @@
 </template>
 
 <script setup>
-import { clearWx } from '@/plugin/wx/api/index.js'
 import { ElMessage } from 'element-plus'
+import { clearWx } from '@/view/login/api'
 
 const clear = async() => {
   const res = await clearWx()

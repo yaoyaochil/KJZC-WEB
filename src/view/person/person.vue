@@ -308,7 +308,7 @@
 
 <script>
 export default {
-  name: 'Person',
+  name: 'Person'
 }
 </script>
 

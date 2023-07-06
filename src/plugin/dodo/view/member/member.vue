@@ -81,9 +81,9 @@
           {{ formatDate(scope.row.UpdatedAt) }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="按钮组">
+      <el-table-column v-auth="admin" align="center" width="400" label="按钮组">
         <template #default="scope">
-          <el-button v-auth="admin" class="table-button" link size="small" type="primary">封禁</el-button>
+          <el-button class="table-button" link size="small" type="primary">封禁</el-button>
           <el-button class="table-button" link size="small" type="primary">查看数字账户</el-button>
           <el-button class="table-button" link size="small" type="primary">赠送积分</el-button>
           <el-button class="table-button" link size="small" type="primary">刷新信息</el-button>

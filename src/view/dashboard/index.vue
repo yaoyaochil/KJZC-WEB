@@ -183,7 +183,7 @@ import { getCommunityMemberCount } from '@/plugin/dodo/api/member_api.js'
 const dashBoardData = ref({
   userCount: {
     total: 0,
-    today: -35
+    today: 0
   },
   dodoUserCount: {
     total: 0,
@@ -375,6 +375,9 @@ export default {
             }
             p {
                 margin-top: 10px;
+                font-size: 14px;
+                color: gray;
+              font-weight: bolder;
             }
         }
     }

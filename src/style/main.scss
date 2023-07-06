@@ -567,7 +567,7 @@ li {
                 width: $width-aside-img;
                 height: $height-aside-img;
                 background: #fff;
-                border-radius: 50%;
+                //border-radius: 50%;
                 padding: 3px;
             }
             .tit-text {
@@ -1205,6 +1205,9 @@ $mainHight: 100vh;
     margin-bottom: 12px;
     display: flex;
     .el-button+.el-button {
+        margin-left: 12px;
+    }
+    .el-upload+el-upload {
         margin-left: 12px;
     }
 }

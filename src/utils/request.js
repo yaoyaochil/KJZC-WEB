@@ -125,7 +125,7 @@ service.interceptors.response.use(
       case 404:
         ElMessageBox.confirm(`
           <p>检测到接口错误${error}</p>
-          <p>错误码<span style="color:red"> 404 </span>：此类错误多为接口未注册（或未重启）或者请求路径（方法）与api路径（方法）不符--如果为自动化代码请检查是否存在空格</p>
+          <p>错误码<span style="color:red"> 404 </span>：此类错误多为接口未注册（或未重启）或者请求路径（方法）与api路径（方法）不符</p>
           `, '接口报错', {
           dangerouslyUseHTMLString: true,
           distinguishCancelAndClose: true,

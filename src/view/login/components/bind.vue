@@ -51,9 +51,9 @@
 
 <script setup>
 import { nextTick, ref } from 'vue'
-import { getLoginPic, loginOrCreate, clearWx, register } from '@/plugin/wx/api/index.js'
-import { createUniqueId } from '@/plugin/wx/utils/createUniqueId.js'
 import { ElMessage } from 'element-plus'
+import { createUniqueId } from '@/view/login/utils/createUniqueId'
+import { getLoginPic } from '@/view/login/api'
 
 const wxUrl = ref('')
 const timeout = ref(false)
