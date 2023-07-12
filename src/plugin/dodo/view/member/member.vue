@@ -14,7 +14,14 @@
           <el-input v-model="searchInfo.dodoSourceId" placeholder="模糊搜索" />
         </el-form-item>
         <el-form-item label="身份组">
-          <el-input v-model.number="searchInfo.roleIdInt" placeholder="身份组搜索" />
+          <el-select v-model="searchInfo.roleIdInt">
+            <el-option
+              v-for="item in roleList"
+              :key="item.roleIdInt"
+              :label="item.roleName"
+              :value="item.roleIdInt"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button size="small" type="primary" icon="search" @click="onSubmit">查询</el-button>
@@ -113,12 +120,13 @@ import { getCommunityMemberList, syncCommunityMember } from '@/plugin/dodo/api/m
 import { formatDate } from '@/utils/format'
 import { convertGender, convertRobotType } from '@/plugin/dodo/util/format'
 import { useBtnAuth } from '@/utils/btnAuth'
-import { syncDoDoMemberRole } from '@/plugin/dodo/api/role'
+import { getDoDoRoleList } from '@/plugin/dodo/api/role'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 // 权限按钮
 const btnAuth = useBtnAuth()
 // =========== 表格控制部分 ===========
+const roleList = ref([])
 const page = ref(1)
 const total = ref(0)
 const pageSize = ref(10)
@@ -143,6 +151,19 @@ const getTableData = async() => {
     pageSize.value = res.data.pageSize
   }
 }
+
+// 获取身份组
+const getRoleList = async() => {
+  const res = await getDoDoRoleList({
+    page: 1,
+    pageSize: 999
+  })
+  if (res.code === 0) {
+    roleList.value = res.data.list
+  }
+}
+
+getRoleList()
 
 getTableData()
 // 修改页面容量

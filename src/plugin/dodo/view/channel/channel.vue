@@ -7,8 +7,18 @@
           —
           <el-date-picker v-model="searchInfo.endCreatedAt" type="datetime" placeholder="结束时间" />
         </el-form-item>
-        <el-form-item label="身份组名称">
-          <el-input v-model="searchInfo.dodoSourceId" placeholder="模糊搜索" />
+        <el-form-item label="频道名称">
+          <el-input v-model="searchInfo.channelName" placeholder="模糊搜索" clearable />
+        </el-form-item>
+        <el-form-item label="频道类型">
+          <el-select v-model="searchInfo.channelType" clearable>
+            <el-option
+              v-for="item in channelTypeSlect"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button size="small" type="primary" icon="search" @click="onSubmit">查询</el-button>
@@ -18,7 +28,7 @@
     </div>
     <div v-auth="btnAuth.admin" class="bodo-table-box">
       <div class="bodo-btn-list">
-        <el-button size="small" type="primary" icon="refresh" @click="syncRole">同步身份组</el-button>
+        <el-button size="small" type="primary" icon="refresh" @click="syncRole">同步频道</el-button>
       </div>
     </div>
     <el-table ref="multipleTable" style="width: 100%" tooltip-effect="light" :data="tableData" row-key="ID">
@@ -27,16 +37,20 @@
           {{ formatDate(scope.row.CreatedAt) }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="身份组ID" prop="roleId" width="120" />
-      <el-table-column align="center" label="名称" prop="roleName" width="200" />
-      <el-table-column align="center" label="颜色" width="120">
+      <el-table-column align="center" label="频道ID" prop="channelId" width="120" />
+      <el-table-column align="center" label="名称" prop="channelName" width="240" />
+      <el-table-column align="center" label="类型" width="120" >
         <template #default="scope">
-          <!--          <img :src="scope.row.avatarUrl" alt="" style="width: 40px; height: 40px; border-radius: 50%;">-->
-          <el-color-picker disabled v-model="scope.row.roleColor" />
+          {{ convertChannelType(scope.row.channelType) }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="官方权限代码" prop="permission" width="140" />
-      <el-table-column align="center" label="成员数量" prop="memberCount" width="140" />
+      <el-table-column align="center" label="分组" width="400">
+        <template #default="scope">
+          <div>
+            {{ scope.row.groupName.length >= 1 ? scope.row.groupName : '无' }}
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="删除" width="140">
         <template #default="scope">
           <div :style="{ 'text-decoration': scope.row.isDel === 1 ? 'line-through' : 'none' }">
@@ -44,7 +58,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="最后更新" width="180">
+      <el-table-column align="center" label="最后更新" width="240">
         <template #default="scope">
           {{ formatDate(scope.row.UpdatedAt) }}
         </template>
@@ -69,7 +83,8 @@ import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { formatDate } from '@/utils/format'
 import { useBtnAuth } from '@/utils/btnAuth'
-import { getDoDoRoleList, syncDoDoRole } from '@/plugin/dodo/api/role'
+import { syncChannels, getChannelList } from '@/plugin/dodo/api/channel'
+import { convertChannelType } from '@/plugin/dodo/util/format'
 // 权限按钮
 const btnAuth = useBtnAuth()
 // =========== 表格控制部分 ===========
@@ -78,9 +93,17 @@ const total = ref(0)
 const pageSize = ref(10)
 const tableData = ref([])
 const searchInfo = ref({})
+// 频道类型，1：文字频道，2：语音频道，4：帖子频道，5：链接频道，6：资料频道
+const channelTypeSlect = ref([
+  { label: '文字频道', value: 1 },
+  { label: '语音频道', value: 2 },
+  { label: '帖子频道', value: 4 },
+  { label: '链接频道', value: 5 },
+  { label: '资料频道', value: 6 }
+])
 // 获取表格数据
 const getTableData = async() => {
-  const res = await getDoDoRoleList({
+  const res = await getChannelList({
     page: page.value,
     pageSize: pageSize.value,
     ...searchInfo.value
@@ -122,7 +145,7 @@ const onReset = () => {
 
 // 同步身份组
 const syncRole = async() => {
-  const res = await syncDoDoRole()
+  const res = await syncChannels()
   if (res.code === 0) {
     await getTableData()
     ElMessage({
@@ -134,43 +157,4 @@ const syncRole = async() => {
 </script>
 
 <style scoped>
-
-.background-text-origin {
-    background-image: linear-gradient(45deg, rgb(251, 78, 140) 0%, rgb(255, 204, 71) 100%);
-    -webkit-background-clip: text; /* 将背景限定在文字区域 */
-    -webkit-text-fill-color: transparent; /* 将文字颜色设为透明 */
-    font-size: 14px;
-    font-weight: bolder;
-}
-
-.background-text-red {
-    background-image: linear-gradient(225deg, rgb(253, 58, 93) 0%, rgb(230, 75, 255) 47.92%, rgb(72, 90, 255) 99.99%, rgb(90, 127, 255) 100%);
-    -webkit-background-clip: text; /* 将背景限定在文字区域 */
-    -webkit-text-fill-color: transparent; /* 将文字颜色设为透明 */
-    font-size: 14px;
-    font-weight: bolder;
-}
-
-.background-text-blue {
-    background-image: linear-gradient(225deg, rgb(72, 255, 211) 0%, rgb(41, 63, 255) 100%);
-    -webkit-background-clip: text; /* 将背景限定在文字区域 */
-    -webkit-text-fill-color: transparent; /* 将文字颜色设为透明 */
-    font-size: 14px;
-    font-weight: bolder;
-    padding: 0.1vw;
-    /*background:#f3f5f5;*/
-    border: 1px solid rgba(0, 0, 0, .06);
-    border-radius: 10px;
-}
-.background-text-normal {
-    background-image: linear-gradient(225deg, rgb(86, 100, 96) 0%, rgb(65, 65, 70) 100%);
-    -webkit-background-clip: text; /* 将背景限定在文字区域 */
-    -webkit-text-fill-color: transparent; /* 将文字颜色设为透明 */
-    font-size: 14px;
-    font-weight: bolder;
-    padding: 0.1vw;
-    /*background:#f3f5f5;*/
-    border: 1px solid rgba(0, 0, 0, .06);
-    border-radius: 10px;
-}
 </style>
