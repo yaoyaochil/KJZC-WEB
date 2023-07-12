@@ -22,6 +22,18 @@
       <el-table-column align="center" label="启动时间" prop="weekday" width="200" />
       <el-table-column align="center" label="游戏开始时间" prop="start_time" width="200" />
       <el-table-column align="center" label="游戏结束时间" prop="end_time" width="200" />
+      <el-table-column align="left" label="奖励规则" min-width="200">
+        <template #default="scope">
+          <el-select>
+            <el-option
+              v-for="item in scope.row.reward_rule"
+              :key="item.ID"
+              :label="item.reward_name"
+              :value="item.ID"
+            />
+          </el-select>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="最后更新" width="180">
         <template #default="scope">
           {{ formatDate(scope.row.UpdatedAt) }}
@@ -45,26 +57,75 @@
         @size-change="handleSizeChange"
       />
     </div>
-    <ChooseImg ref="chooseImgVisible" @enter-img="enterImg"/>
-    <el-dialog v-model="dialogVisible" title="配置副本" width="600px" :before-close="closeDialog">
-      <el-form :model="formData">
-        <el-form-item label="副本名称" label-width="120px">
-          <el-input v-model="formData.game_title" placeholder="请输入副本名称" />
-        </el-form-item>
-        <el-form-item label="副本图片" label-width="120px">
-          <el-button class="image-select" style="border-radius: 10px" @click="openChooseImg">
-            <el-image
-              v-if="formData.game_image"
-              :src="formData.game_image"
-              class="image-select-img"
-            />
-            <el-icon v-else class="avatar-uploader-icon">
-              <Plus />
-            </el-icon>
-          </el-button>
-
-        </el-form-item>
-      </el-form>
+    <ChooseImg ref="chooseImgVisible" @enter-img="enterImg" />
+    <el-dialog v-model="dialogVisible" title="配置副本" width="1200px" :before-close="closeDialog">
+      <warning-bar title="副本配置 注意时间目前仅可以选择整点~" />
+      <el-row>
+        <el-col :span="10" style="float: left">
+          <el-form :model="formData">
+            <el-form-item label="副本名称" label-width="120px">
+              <el-input v-model="formData.game_title" placeholder="请输入副本名称" />
+            </el-form-item>
+            <el-form-item label="副本图片" label-width="120px">
+              <el-button class="image-select" style="border-radius: 8px" @click="openChooseImg">
+                <el-image
+                  v-if="formData.game_image"
+                  :src="formData.game_image"
+                  class="image-select-img"
+                />
+                <el-icon v-else class="avatar-uploader-icon">
+                  <Plus />
+                </el-icon>
+              </el-button>
+            </el-form-item>
+            <el-form-item label="启动时间" label-width="120px">
+              <el-select v-model="formData.weekday">
+                <el-option v-for="item in weekdaySelect" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="开始时间" label-width="120px">
+              <el-time-picker v-model="start_time" type="datetime" format="HH:mm" value-format="H" @change="changeStartTime" />
+            </el-form-item>
+            <el-form-item label="结束时间" label-width="120px">
+              <el-time-picker v-model="end_time" type="datetime" format="HH:mm" value-format="H" @change="changeEndTime" />
+            </el-form-item>
+            <el-form-item label="卡片撤回时间（单位：秒）" label-width="120px">
+              <el-slider v-model.number="formData.boss_card_withdraw_time" show-input :show-input-controls="false" show-stops :max="10" :min="1" show-tooltip />
+            </el-form-item>
+          </el-form>
+        </el-col>
+        <el-col :span="10" :offset="2" style="float: right">
+          <el-form :model="formData">
+            <el-form-item label="Boss初始血量" label-width="120px">
+              <el-input-number v-model.number="formData.boss_hp" :min="1" size="large" />
+            </el-form-item>
+            <el-form-item label="Boss攻击力↑" label-width="120px">
+              <el-input-number v-model.number="formData.boss_attack_max" :min="1" size="large" />
+            </el-form-item>
+            <el-form-item label="Boss攻击力↓" label-width="120px">
+              <el-input-number v-model.number="formData.boss_attack_min" :min="1" size="large" />
+            </el-form-item>
+            <el-form-item label="阶段一Boss血量" label-width="120px">
+              <el-slider v-model.number="formData.boss_stage_threshold_one" show-input :show-input-controls="false" show-stops :max="100" :min="1" show-tooltip />
+            </el-form-item>
+            <el-form-item label="阶段二Boss血量" label-width="120px">
+              <el-slider v-model.number="formData.boss_stage_threshold_two" show-input :show-input-controls="false" show-stops :max="100" :min="1" show-tooltip />
+            </el-form-item>
+            <el-form-item label="阶段三Boss血量" label-width="120px">
+              <el-slider v-model.number="formData.boss_stage_threshold_three" show-input :show-input-controls="false" show-stops :max="100" :min="1" show-tooltip />
+            </el-form-item>
+            <el-form-item label="玩家最高血量" label-width="120px">
+              <el-slider v-model.number="formData.player_initial_hp" show-input :show-input-controls="false" show-stops :max="100" :min="1" show-tooltip />
+            </el-form-item>
+            <el-form-item label="玩家攻击范围" label-width="120px">
+              <el-slider v-model="range_attack" range-start-label="最小攻击力" range-end-label="最大攻击力" range show-stops :max="100" :min="1" show-tooltip @change="changeRangeAttack" />
+            </el-form-item>
+            <el-form-item label="VIP血量加成" label-width="120px">
+              <el-slider v-model.number="formData.vip_bonus_hp" show-input :show-input-controls="false" show-stops :max="100" :min="1" show-tooltip />
+            </el-form-item>
+          </el-form>
+        </el-col>
+      </el-row>
     </el-dialog>
   </div>
 </template>
@@ -78,10 +139,26 @@ import {
   getBossSettingById,
   getAllBossSetting
 } from '@/plugin/boss_setting/api/api'
+import WarningBar from '@/components/warningBar/warningBar.vue'
 import ChooseImg from '@/plugin/boss_setting/chooseImg/index.vue'
 
 // =========== dialog控制 ===========
 const dialogVisible = ref(false)
+const start_time = ref('')
+const end_time = ref('')
+const range_attack = ref([1, 50])
+const changeStartTime = (e) => {
+  formData.value.start_time = parseInt(e)
+}
+
+const changeEndTime = (e) => {
+  formData.value.end_time = parseInt(e)
+}
+
+const changeRangeAttack = (e) => {
+  formData.player_attack_min = e[0]
+  formData.player_attack_max = e[1]
+}
 
 // =========== 表格控制部分 ===========
 const page = ref(1)
@@ -91,25 +168,42 @@ const tableData = ref([])
 const searchInfo = ref({})
 const chooseImgVisible = ref(null)
 const formData = ref({
-  game_title: '',
-  game_image: '',
-  weekday: 0,
-  start_time: 0,
-  end_time: 0,
-  boss_hp: 0.0,
-  boss_attack_min: 0,
-  boss_attack_max: 0,
-  boss_stage_threshold_one_min: 0,
-  boss_stage_threshold_one_max: 0,
-  boss_stage_threshold_two_min: 0,
-  boss_stage_threshold_two_max: 0,
-  player_initial_hp: 0.0,
-  player_attack_min: 0,
-  player_attack_max: 0,
-  vip_bonus_hp: 0,
-  boss_card_withdraw_time: 0,
-  mvp_bonus_attack_percent: 0,
+  boss_hp: 1,
+  boss_attack_max: 1,
+  boss_attack_min: 1
 })
+
+const weekdaySelect = ref([
+  {
+    value: 1,
+    label: '周一'
+  },
+  {
+    value: 2,
+    label: '周二'
+  },
+  {
+    value: 3,
+    label: '周三'
+  },
+  {
+    value: 4,
+    label: '周四'
+  },
+  {
+    value: 5,
+    label: '周五'
+  },
+  {
+    value: 6,
+    label: '周六'
+  },
+  {
+    value: 7,
+    label: '周日'
+  },
+])
+
 // 获取表格数据
 const getTableData = async() => {
   const res = await getAllBossSetting({
@@ -167,7 +261,7 @@ getTableData()
   justify-content: center;
   align-items: center;
   border: 1px dashed rgba(48, 49, 51, 0.4);
-  border-radius: 10px;
+  border-radius: 8px;
   .image-select-img {
     width: 240px;
     height: 120px;border: 1px dashed #303133;

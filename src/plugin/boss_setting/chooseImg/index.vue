@@ -18,7 +18,7 @@
         </el-upload>
         <el-form ref="searchForm" :inline="true" :model="search">
           <el-form-item label="">
-            <el-input v-model="search.keyword" class="keyword" placeholder="请输入文件名或备注" />
+            <el-input v-model="search.imageName" class="keyword" placeholder="请输入文件名或备注" />
           </el-form-item>
 
           <el-form-item>
@@ -137,8 +137,9 @@ const beforeImageUpload = (file) => {
   upLoading.value = true
   const isJPG = file.type === 'image/jpeg'
   const isPng = file.type === 'image/png'
-  if (!isJPG && !isPng) {
-    ElMessage.error('上传头像图片只能是 jpg或png 格式!')
+  const isWebp = file.type === 'image/webp'
+  if (!isJPG && !isPng && !isWebp) {
+    ElMessage.error('上传头像图片只能是 jpg、png、webp 格式!')
     return false
   }
 
@@ -154,6 +155,7 @@ const beforeImageUpload = (file) => {
 const handleImageSuccess = (res) => {
   if (res.code !== 0) {
     ElMessage.error(res.msg)
+    upLoading.value = false
     return
   }
   upLoading.value = false
