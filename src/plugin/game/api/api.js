@@ -3,7 +3,7 @@ import service from '@/utils/request'
 // 创建Boss配置
 export function createBossSetting(data) {
   return service({
-    url: '/boss_api/createBossSetting',
+    url: '/game_api/createBossSetting',
     method: 'post',
     data,
   })
@@ -12,7 +12,7 @@ export function createBossSetting(data) {
 // 更新Boss配置
 export function updateBossSetting(data) {
   return service({
-    url: '/boss_api/updateBossSetting',
+    url: '/game_api/updateBossSetting',
     method: 'post',
     data,
   })
@@ -21,7 +21,7 @@ export function updateBossSetting(data) {
 // 根据id获取Boss配置
 export function getBossSettingById(data) {
   return service({
-    url: '/boss_api/getBossSettingById',
+    url: '/game_api/getBossSettingById',
     method: 'post',
     data,
   })
@@ -30,7 +30,7 @@ export function getBossSettingById(data) {
 // 根据id删除Boss配置
 export function deleteBossSettingById(data) {
   return service({
-    url: '/boss_api/deleteBossSetting',
+    url: '/game_api/deleteBossSetting',
     method: 'post',
     data,
   })
@@ -39,7 +39,7 @@ export function deleteBossSettingById(data) {
 // 获取所有Boss配置
 export function getAllBossSetting(data) {
   return service({
-    url: '/boss_api/getBossSettingList',
+    url: '/game_api/getBossSettingList',
     method: 'post',
     data,
   })

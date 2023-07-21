@@ -64,7 +64,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import WarningBar from '@/components/warningBar/warningBar.vue'
 import { useUserStore } from '@/pinia/modules/user'
 import ImageCompress from '@/utils/image'
-import { getImageList, updateImage } from '@/plugin/boss_setting/api/upload'
+import { getImageList, updateImage } from '@/plugin/game/api/upload'
 
 const userStore = useUserStore()
 const path = ref(import.meta.env.VITE_BASE_API)

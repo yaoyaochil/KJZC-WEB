@@ -24,12 +24,12 @@
       <el-table-column align="center" label="游戏结束时间" prop="end_time" width="200" />
       <el-table-column align="left" label="奖励规则" min-width="200">
         <template #default="scope">
-          <el-select>
+          <el-select v-model="scope.row.reward_rule.reward_rule_id">
             <el-option
-              v-for="item in scope.row.reward_rule"
-              :key="item.ID"
+              v-for="(item,index) in scope.row.reward_rule"
+              :key="index"
               :label="item.reward_name"
-              :value="item.ID"
+              :value="item.reward_rule_id"
             />
           </el-select>
         </template>
@@ -90,7 +90,7 @@
               <el-time-picker v-model="end_time" type="datetime" format="HH:mm" value-format="H" @change="changeEndTime" />
             </el-form-item>
             <el-form-item label="卡片撤回时间（单位：秒）" label-width="120px">
-              <el-slider v-model.number="formData.boss_card_withdraw_time" show-input :show-input-controls="false" show-stops :max="10" :min="1" show-tooltip />
+              <el-slider v-model.number="formData.boss_card_withdraw_time" show-input :show-input-controls="false" show-stops :max="60" :min="1" show-tooltip />
             </el-form-item>
           </el-form>
         </el-col>
@@ -126,6 +126,12 @@
           </el-form>
         </el-col>
       </el-row>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button size="small" @click="closeAddUserDialog">取 消</el-button>
+          <el-button size="small" type="primary" @click="enterAddUserDialog">创 建</el-button>
+        </div>
+      </template>
     </el-dialog>
   </div>
 </template>
@@ -138,9 +144,9 @@ import {
   deleteBossSettingById,
   getBossSettingById,
   getAllBossSetting
-} from '@/plugin/boss_setting/api/api'
+} from '@/plugin/game/api/api'
 import WarningBar from '@/components/warningBar/warningBar.vue'
-import ChooseImg from '@/plugin/boss_setting/chooseImg/index.vue'
+import ChooseImg from '@/plugin/game/chooseImg/index.vue'
 
 // =========== dialog控制 ===========
 const dialogVisible = ref(false)
@@ -160,6 +166,24 @@ const changeRangeAttack = (e) => {
   formData.player_attack_max = e[1]
 }
 
+const closeAddUserDialog = () => {
+  formData.value = {
+    boss_hp: 1,
+    boss_attack_max: 1,
+    boss_attack_min: 1,
+    is_enabled: 0,
+  }
+  dialogVisible.value = false
+}
+
+const enterAddUserDialog = () => {
+  const res = createBossSetting(formData.value)
+  if (res.code === 0) {
+    closeAddUserDialog()
+    getAllBossSetting()
+  }
+}
+
 // =========== 表格控制部分 ===========
 const page = ref(1)
 const total = ref(0)
@@ -170,7 +194,8 @@ const chooseImgVisible = ref(null)
 const formData = ref({
   boss_hp: 1,
   boss_attack_max: 1,
-  boss_attack_min: 1
+  boss_attack_min: 1,
+  is_enabled: 0,
 })
 
 const weekdaySelect = ref([
