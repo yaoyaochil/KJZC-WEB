@@ -44,3 +44,12 @@ export const getGameItemById = (data) => {
     data
   })
 }
+
+// 给批量玩家添加物品
+export const addGameItemToPlayers = (data) => {
+  return service.request({
+    method: 'post',
+    url: '/game_api/sendItemToPlayers',
+    data
+  })
+}

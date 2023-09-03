@@ -3,7 +3,7 @@
  */
 
 const config = {
-  appName: 'K·J·Z·C',
+  appName: '管理平台',
   appLogo: 'https://huaduogiegie.oss-cn-shanghai.aliyuncs.com/picgo/202306261548230.png',
   showViteLogo: true
 }

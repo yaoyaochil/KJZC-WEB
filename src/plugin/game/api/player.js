@@ -17,3 +17,12 @@ export const getPlayerItemList = (data) => {
     data
   })
 }
+
+// 分页获取玩家道具列表
+export const getPlayerItemListByPage = (data) => {
+  return service.request({
+    method: 'post',
+    url: '/game_api/getPlayerItemPageList',
+    data
+  })
+}

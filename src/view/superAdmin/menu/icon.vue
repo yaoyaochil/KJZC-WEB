@@ -1157,6 +1157,10 @@ const options = reactive([
     'key': 'wind-power',
     'label': 'wind-power',
   },
+  {
+    'key': 'SwitchFilled',
+    'label': 'SwitchFilled',
+  }
 ])
 
 const metaData = ref(props.meta)
