@@ -31,8 +31,8 @@
                         <span :class="dashBoardData.dodoUserCount.today >= 0 ? 'green' : 'red'">
                           {{ dashBoardData.dodoUserCount.today }}%
                           <el-icon>
-                            <CaretTop v-if="dashBoardData.dodoUserCount.today >= 0"/>
-                            <CaretBottom v-if="dashBoardData.dodoUserCount.today < 0"/>
+                            <CaretTop v-if="dashBoardData.dodoUserCount.today >= 0" />
+                            <CaretBottom v-if="dashBoardData.dodoUserCount.today < 0" />
                           </el-icon>
                         </span>
                       </div>
@@ -49,7 +49,7 @@
                           <el-icon class="dashboard-icon">
                             <Avatar />
                           </el-icon>
-                          系统成员总数
+                          系统用户总数
                           <el-tooltip effect="dark" content="数据来自系统实时统计" placement="top">
                             <el-icon style="margin-left: 4px" :size="12">
                               <Warning />
@@ -64,8 +64,8 @@
                         <span :class="dashBoardData.userCount.today >= 0 ? 'green' : 'red'">
                           {{ dashBoardData.userCount.today }}%
                           <el-icon>
-                            <CaretTop v-if="dashBoardData.userCount.today >= 0"/>
-                            <CaretBottom v-if="dashBoardData.userCount.today < 0"/>
+                            <CaretTop v-if="dashBoardData.userCount.today >= 0" />
+                            <CaretBottom v-if="dashBoardData.userCount.today < 0" />
                           </el-icon>
                         </span>
                       </div>
@@ -95,10 +95,10 @@
                       <div class="footer-item">
                         <span>较昨日</span>
                         <span :class="dashBoardData.goodRate.today >= 0 ? 'green' : 'red'">
-                          {{dashBoardData.goodRate.today}}%
+                          {{ dashBoardData.goodRate.today }}%
                           <el-icon>
-                            <CaretTop v-if="dashBoardData.goodRate.today >= 0"/>
-                            <CaretBottom v-if="dashBoardData.goodRate.today < 0"/>
+                            <CaretTop v-if="dashBoardData.goodRate.today >= 0" />
+                            <CaretBottom v-if="dashBoardData.goodRate.today < 0" />
                           </el-icon>
                         </span>
                       </div>
@@ -219,7 +219,7 @@ const weatherInfo = useWeatherInfo()
 
 const toolCards = ref([
   {
-    label: '用户管理',
+    label: '社群管理',
     icon: 'monitor',
     name: 'user',
     color: '#ff9c6e',
@@ -240,9 +240,9 @@ const toolCards = ref([
     bg: 'rgba(179, 127, 235,.3)'
   },
   {
-    label: '分包开发',
+    label: '雾石记录',
     icon: 'set-up',
-    name: 'autoPlug',
+    name: 'mininglog',
     color: '#b37feb',
     bg: 'rgba(179, 127, 235,.3)'
   },

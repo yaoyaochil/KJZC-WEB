@@ -1,20 +1,25 @@
 <template>
   <div>
+    <div class="bodo-table-box">
+      <div class="bodo-btn-list">
+        <el-button size="small" type="primary" icon="download" @click="exportExcel">导出Excel</el-button>
+      </div>
+    </div>
     <el-table ref="multipleTable" :data="tableData" row-key="ID" style="width: 100%" tooltip-effect="light">
-      <el-table-column align="center" label="同步日期" width="180">
+      <el-table-column align="center" label="挖掘时间" width="180">
         <template #default="scope">
           {{ formatDate(scope.row.CreatedAt) }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="头像" width="180">
         <template #default="scope">
-          <CustomPic style="margin-top:8px" :pic-src="scope.row.system_user.headerImg" />
+          <CustomPic style="margin-top:4px" :pic-src="scope.row.system_user.headerImg" />
         </template>
       </el-table-column>
-      <el-table-column align="center" label="名称" prop="system_user.nickName" width="120" />
-      <el-table-column align="center" label="是否成功" width="120">
+      <el-table-column align="center" label="用户" prop="system_user.nickName" width="120" />
+      <el-table-column align="center" label="结果" width="120">
         <template #default="scope">
-          {{ scope.row.is_success === 1 ? '是' : '否' }}
+          {{ scope.row.is_success === 1 ? '挖掘成功' : '挖掘失败' }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="当次概率(A)" width="120">
@@ -79,6 +84,11 @@ const handleCurrentChange = (val) => {
 const handleSizeChange = (val) => {
   pageSize.value = val
   getTableData()
+}
+
+// 导出excel
+const exportExcel = () => {
+
 }
 </script>
 
