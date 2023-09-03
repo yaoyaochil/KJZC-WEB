@@ -119,7 +119,7 @@
             </div>
           </div>
         </div>
-        <img src="../../assets/dashboard.svg" class="bodo-top-card-right" alt>
+        <img src="../../assets/dashlogo.png" class="bodo-top-card-right" alt>
       </div>
     </div>
     <div class="bodo-card-box">
