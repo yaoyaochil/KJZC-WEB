@@ -11,7 +11,7 @@
 </template>
 
 <script setup>
-import { nextTick, ref, defineExpose } from 'vue'
+import { nextTick, ref } from 'vue'
 import { getLoginPic, loginOrCreate } from '@/view/login/api/index.js'
 import { createUniqueId } from '@/view/login/utils/createUniqueId.js'
 import { ElMessage } from 'element-plus'
@@ -76,7 +76,7 @@ const registerForm = ref({
   loginFlag: '',
 })
 defineExpose({
-    scan,
+  scan,
 })
 
 </script>

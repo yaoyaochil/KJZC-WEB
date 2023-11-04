@@ -1,6 +1,25 @@
 <template>
   <div>
     <warning-bar title="注：右上角头像下拉可切换角色" />
+    <div class="bodo-search-box">
+      <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
+        <el-form-item label="创建时间">
+          <el-date-picker v-model="searchInfo.startCreatedAt" type="datetime" placeholder="开始时间" />
+          —
+          <el-date-picker v-model="searchInfo.endCreatedAt" type="datetime" placeholder="结束时间" />
+        </el-form-item>
+        <el-form-item label="用户昵称">
+          <el-input v-model="searchInfo.nickName" placeholder="支持模糊搜索" />
+        </el-form-item>
+        <el-form-item label="手机号">
+          <el-input v-model="searchInfo.phone" placeholder="完整输入用户手机号码" />
+        </el-form-item>
+        <el-form-item>
+          <el-button size="small" type="primary" icon="search" @click="onSubmit">查询</el-button>
+          <el-button size="small" icon="refresh" @click="onReset">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
     <div class="bodo-table-box">
       <div class="bodo-btn-list">
         <el-button size="small" type="primary" icon="plus" @click="addUser">新增用户</el-button>
@@ -51,10 +70,9 @@
           </template>
         </el-table-column>
 
-
         <el-table-column label="操作" min-width="250" fixed="right">
           <template #default="scope">
-            <el-button class="table-button" link size="small" type="primary" @click="getItem(scope.row.ID)">查看背包</el-button>
+            <el-button class="table-button" link size="small" type="primary" @click="getItem(scope.row.ID,scope.row.userName)">查看背包</el-button>
             <el-button class="table-button" link size="small" type="primary" @click="giveItem(scope.row.ID)">发放道具</el-button>
             <el-popover v-model="scope.row.visible" placement="top" width="160">
               <p>确定要删除此用户吗</p>
@@ -86,7 +104,7 @@
     </div>
     <el-dialog
       v-model="addUserDialog"
-      custom-class="user-dialog"
+      class="user-dialog"
       title="用户"
       :show-close="false"
       :close-on-press-escape="false"
@@ -198,6 +216,21 @@ import { giveItemToUser } from '@/plugin/game/api/player'
 import { formatTime } from '@/utils/format.js'
 import PlayerItem from '@/plugin/game/components/playerItem/index.vue'
 const path = ref(import.meta.env.VITE_BASE_API + '/')
+const searchInfo = ref({})
+
+// 条件搜索
+const onSubmit = () => {
+  page.value = 1
+  pageSize.value = 10
+  if (searchInfo.value.current_month_duty === '') {
+    searchInfo.value.current_month_duty = null
+  }
+  getTableData()
+}
+
+const onReset = () => {
+  searchInfo.value = {}
+}
 
 // 道具发放相关
 // 道具发放
@@ -240,8 +273,8 @@ const closeItemDialog = () => {
 
 // 查看背包
 const playerItemView = ref(null)
-const getItem = async(id) => {
-  playerItemView.value.open(id)
+const getItem = async(id, userName) => {
+  playerItemView.value.open(id, userName)
 }
 // 初始化相关
 const setAuthorityOptions = (AuthorityData, optionsData) => {
@@ -282,7 +315,7 @@ const handleCurrentChange = (val) => {
 
 // 查询
 const getTableData = async() => {
-  const table = await getUserList({ page: page.value, pageSize: pageSize.value })
+  const table = await getUserList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
   if (table.code === 0) {
     tableData.value = table.data.list
     total.value = table.data.total

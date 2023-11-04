@@ -88,7 +88,7 @@
             <wx-login :ref="wxRef" />
           </div>
 
-          <text style="margin-top:5%;font-size: 14px;width: 100%;justify-content: center;display: flex;align-items: center;color: gray">微信 扫一扫 登陆</text>
+          <text style="margin-top:5%;font-size: 14px;width: 100%;justify-content: center;display: flex;align-items: center;color: rgb(128,128,128)">微信 扫一扫 登陆</text>
         </el-tab-pane>
 
       </el-tabs>

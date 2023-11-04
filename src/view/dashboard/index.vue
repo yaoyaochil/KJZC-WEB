@@ -199,7 +199,6 @@ const dashBoardData = ref({
 const getUserCountData = async() => {
   const res = await getUserCount()
   if (res.code === 0) {
-    console.log(res.data.total)
     dashBoardData.value.userCount.total = res.data.total
   }
 }
@@ -210,7 +209,6 @@ getUserCountData()
 const getCommunityMemberCountData = async() => {
   const res = await getCommunityMemberCount()
   if (res.code === 0) {
-    console.log(res.data.total)
     dashBoardData.value.dodoUserCount.total = res.data
   }
 }

@@ -9,6 +9,15 @@ export const giveItemToUser = (data) => {
   })
 }
 
+// 扣除道具
+export const deductItemFromUser = (data) => {
+  return service.request({
+    method: 'post',
+    url: '/game_api/reduceItemFromUser',
+    data
+  })
+}
+
 // 获取玩家道具列表
 export const getPlayerItemList = (data) => {
   return service.request({

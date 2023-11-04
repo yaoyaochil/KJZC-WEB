@@ -19,7 +19,7 @@
       <el-table-column align="center" label="用户" prop="system_user.nickName" width="120" />
       <el-table-column align="center" label="结果" width="120">
         <template #default="scope">
-          {{ scope.row.is_success === 1 ? '挖掘成功' : '挖掘失败' }}
+          {{ scope.row.is_reward === true ? '挖掘成功' : '挖掘失败' }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="当次概率(A)" width="120">

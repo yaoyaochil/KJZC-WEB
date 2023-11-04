@@ -136,7 +136,7 @@
             no-match-text="系统无此账户"
             remote-show-suffix
             clearable
-            :remote-method="getDoDoUserList"
+            :remote-method="getSystemUserList"
             :loading="loading"
             multiple
             style="width: 400px"
@@ -207,14 +207,14 @@ const addItemRules = ref({
 const userOptions = ref([])
 
 // 远程搜索系统用户
-const getDoDoUserList = async(query) => {
+const getSystemUserList = async(query) => {
   if (query) {
     loading.value = true
     setTimeout(async() => {
       const pageInfo = {
         page: 1,
-        size: 999,
-        phone: query,
+        pageSize: 999,
+        nickName: query,
       }
       const res = await getUserList(pageInfo)
       if (res.code === 0) {
@@ -238,7 +238,7 @@ const openAddItemDialog = async(row) => {
   addItemFormData.value.item_name = row.item_name
   addItemFormData.value.item_id = row.item_id
   addItemDialog.value = true
-  await getDoDoUserList()
+  await getSystemUserList()
 }
 
 const closeAddItemDialog = () => {

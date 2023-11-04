@@ -45,9 +45,9 @@ export const formatTime = (time) => {
   }
 }
 
-// 小数转换为百分比
+// 小数转换为百分比 取小数点后两位
 export const formatPercent = (value) => {
   if (!isNaN(value)) {
-    return value * 100 + '%'
+    return (value * 100).toFixed(2) + '%'
   }
 }
